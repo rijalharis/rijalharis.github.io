@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Kas Narawi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#BC2B26">
+<meta name="description" content="Kas Narawi — rekap penjualan dan arus kas Dimsum Narawi">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kas Narawi">
+<style>
+  html, body { margin: 0; height: 100%; background: #BC2B26; overflow: hidden; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  #app {
+    position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block;
+    padding-top: env(safe-area-inset-top); box-sizing: border-box; background: #FFF8EC;
+  }
+  #layar {
+    position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; background: #BC2B26; color: #FFF8EC; text-align: center; padding: 24px; z-index: 2;
+    transition: opacity .25s ease;
+  }
+  #layar.hilang { opacity: 0; pointer-events: none; }
+  #layar img { width: 128px; height: 128px; border-radius: 28px; }
+  #layar p { margin: 0; font-size: 15px; line-height: 1.45; max-width: 300px; }
+  #layar button {
+    display: none; border: 0; border-radius: 12px; padding: 12px 22px; font: 600 15px/1 inherit;
+    background: #F5C518; color: #3A2418; cursor: pointer;
+  }
+  #pita { position: fixed; left: 0; right: 0; bottom: 0; z-index: 3; background: #3A2418; color: #FFF8EC; font-size: 13px; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); text-align: center; }
+  .putar { width: 28px; height: 28px; border-radius: 50%; border: 3px solid rgba(255,248,236,.35); border-top-color: #FFF8EC; animation: p 0.9s linear infinite; }
+  @keyframes p { to { transform: rotate(360deg); } }
+  #layar.galat .putar { display: none; }
+  #layar.galat button { display: inline-block; }
+</style>
+</head>
+<body>
+<div id="layar" role="status" aria-live="polite">
+  <img src="icon-512.png" alt="Narawi">
+  <div class="putar" aria-hidden="true"></div>
+  <p id="pesan">Memuat Kas Narawi…</p>
+  <button id="ulang" type="button">Coba lagi</button>
+</div>
+<div id="pita" hidden>Offline — simpan lagi setelah koneksi kembali.</div>
+<iframe id="app" title="Kas Narawi" allow="camera; clipboard-read; clipboard-write; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<script>
+(function () {
+  var URL_APP = 'https://script.google.com/macros/s/AKfycbwPG5jf7iOgbaUy6hQYcOv4CdutRPuTwB2bS1BZAC-VRKLRPlWSVTUgJNY5zM9dLT1pZA/exec';
+  var app = document.getElementById('app'), layar = document.getElementById('layar'),
+      pesan = document.getElementById('pesan'), ulang = document.getElementById('ulang'), batas;
+
+  function galat(teks) {
+    layar.classList.remove('hilang'); layar.classList.add('galat'); pesan.textContent = teks;
+  }
+  function muat() {
+    if (!navigator.onLine) return galat('Tidak ada koneksi internet. Kas Narawi butuh internet untuk membaca dan menyimpan data.');
+    layar.classList.remove('galat', 'hilang'); pesan.textContent = 'Memuat Kas Narawi…';
+    clearTimeout(batas);
+    batas = setTimeout(function () { galat('Koneksi lambat. Tunggu sebentar lagi atau coba muat ulang.'); }, 25000);
+    app.src = URL_APP + '?pwa=1&t=' + Date.now();
+  }
+  app.addEventListener('load', function () {
+    if (!app.src) return;
+    clearTimeout(batas); layar.classList.add('hilang'); layar.classList.remove('galat');
+  });
+  ulang.addEventListener('click', muat);
+  var pita = document.getElementById('pita');
+  window.addEventListener('online', function () { pita.hidden = true; if (layar.classList.contains('galat')) muat(); });
+  window.addEventListener('offline', function () { pita.hidden = false; });
+  muat();
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+})();
+</script>
+</body>
+</html>

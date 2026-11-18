@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "Kas Narawi",
+  "short_name": "Kas Narawi",
+  "description": "Rekap penjualan, arus kas, settlement QRIS, dan dashboard Dimsum Narawi.",
+  "lang": "id",
+  "start_url": "/?src=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#BC2B26",
+  "theme_color": "#BC2B26",
+  "categories": ["business", "finance", "productivity"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

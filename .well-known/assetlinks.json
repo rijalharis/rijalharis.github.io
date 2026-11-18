@@ -1,0 +1,1 @@
+[{"relation": ["delegate_permission/common.handle_all_urls"], "target": {"namespace": "android_app", "package_name": "com.narawi.kas", "sha256_cert_fingerprints": ["31:5F:A7:CA:A7:16:05:37:E0:9E:FD:5D:4D:77:17:A3:D6:E6:0A:FB:B0:C4:8B:5D:BA:51:FC:44:6E:98:99:2B"]}}]
